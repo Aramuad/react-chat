@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { setFlash } from '../reducers/flash'
 import { addMessage } from '../reducers/messages'
+import { axios } from 'axios'
 import {
   Segment,
   Header,
@@ -48,13 +49,28 @@ addMessage = (e) => {
   e.preventDefault()
   const { dispatch, user: { email } } = this.props
   const { message } = this.setState
-  dispatch(addMessage)({ email, body: message }))
-  this.setState = ({message: ''})
+  axios.post(./api/messages', { email, body,:message })
+    .then( () => this.setState({ message: '' })
 }
 
 
 class ChatWindow extends React.Component {
+  state = { message: '' }
+
+  componentDidMount() {
+    window.MessageBus.start()
+    const { dispatch } = this.props
+    this.props.dispatch(setFlash('Welcome to React Chat', 'green'))
+
+  window.MessageBus.subscribe("/chat_message", (data) => {
+    dispatch(addMessage(data))
+  })
+}
+
+componentWillUnmount
+
   return (
+
     <Segment basic>
       <Underline as="h2' textAlign="center">
         React Chat!
